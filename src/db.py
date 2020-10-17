@@ -3,7 +3,6 @@ from src.settings import DB_NAME
 
 
 class DBConnector(object):
-
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(DBConnector, cls).__new__(cls)
