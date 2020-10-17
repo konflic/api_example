@@ -1,6 +1,6 @@
 import sqlite3
 from src.settings import DB_NAME
-
+from flask import make_response
 
 class DBConnector(object):
     def __new__(cls):
@@ -14,11 +14,14 @@ class DBConnector(object):
 
 def execute_sql(sql, values=None):
     connect = DBConnector().instance
-    if values:
-        connect.execute(sql, values)
-    else:
-        connect.execute(sql)
-    connect.commit()
+    try:
+        if values:
+            connect.execute(sql, values)
+        else:
+            connect.execute(sql)
+        connect.commit()
+    except sqlite3.OperationalError:
+        return make_response({"error": "database error"})
     connect.close()
 
 

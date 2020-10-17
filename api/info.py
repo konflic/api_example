@@ -1,5 +1,5 @@
 from types import SimpleNamespace
-from src.settings import HTTP_METHODS
+from src.settings import HTTP_METHODS, style
 from flask import Blueprint, request, jsonify, Response
 
 info_blueprint = Blueprint('info', __name__)
@@ -12,8 +12,11 @@ routes = SimpleNamespace(
 @info_blueprint.route(routes.root)
 def index():
     return f"""
-    <a href="{routes.about}">{routes.about}</a> - Возвращает информацию о запросе<br>
-    <a href="/info/response">/info/response/<status></a> - Возвращает запрос нужного статуса
+    {style}
+    <h2>Examples and info</h2>
+    <a href="/api">< BACK</a><br><br>
+    <a href="{routes.about}">{routes.about}</a> Returns the request data as response<br>
+    <a href="/api/info/response/200">/api/info/response/200</a> - Returns given status response
     """
 
 
@@ -39,6 +42,9 @@ def about():
 @info_blueprint.route('/api/info/response/<status>', methods=HTTP_METHODS)
 def response(status=200):
     response = Response()
-    response.status_code = int(status)
-    response.set_data("<h1>Response status is: {status}</h1>".format(status=status))
+    try:
+        response.status_code = int(status)
+    except:
+        response.status_code = 200
+    response.set_data("<p>Response status is: {status}</p>".format(status=status))
     return response

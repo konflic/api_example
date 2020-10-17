@@ -27,6 +27,7 @@ def index():
     <a href="/api/info">Info</a> Echo по запросу<br>
     <a href="/api/update">Update</a> Изменение и добавление данных<br>
     <a href="/api/auth">Auth</a> Авторизация<br>
+    <a href="/api/delete">Delete</a> Удаление данных<br>
     """
 
 

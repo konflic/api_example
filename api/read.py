@@ -6,8 +6,9 @@ from flask import Blueprint, jsonify, make_response
 
 read_blueprint = Blueprint('read', __name__)
 
+root = "/api/read"
 
-@read_blueprint.route('/api/read')
+@read_blueprint.route(root)
 def index():
     return f"""
     {style}
@@ -27,16 +28,16 @@ def index():
             <td>Show all users in database</td>
         </tr>
         <tr>
-            <td><a href="/api/read/username">/api/read/<username></a></td>
+            <td><a href="/api/read/name">/api/read/name</a></td>
             <td>GET</td>
             <td>None</td>
-            <td>Show data for <username></td>
+            <td>Show data for given name</td>
         </tr>
     </table>
     """
 
 
-@read_blueprint.route('/api/read/all')
+@read_blueprint.route(f"{root}/all")
 def all():
     try:
         data = get_sql_result("SELECT * FROM users;")
@@ -45,10 +46,10 @@ def all():
         return make_response({"error": "database not created"})
 
 
-@read_blueprint.route('/api/read/<username>')
-def user(username):
+@read_blueprint.route(f'{root}/<name>')
+def user(name):
     try:
-        data = get_sql_result("SELECT * FROM users WHERE name = ?;", (username,))
+        data = get_sql_result("SELECT * FROM users WHERE name = ?;", (name,))
         return jsonify(data)
     except sqlite3.OperationalError:
         return make_response({"error": "database not created"})
