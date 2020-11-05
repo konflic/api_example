@@ -18,7 +18,7 @@ def index():
     {style}
     <h2>Examples and info</h2>
     <a href="/api">< BACK</a><br><br>
-    <a href="{routes.data}">{routes.data}</a> - Returns simple JSON
+    <a href="{routes.data}">{routes.data}</a> - Returns simple JSON<br>
     <a href="{routes.about}">{routes.about}</a> - Returns the request data as response<br>
     <a href="{routes.response}/200">{routes.response}/200</a> - Returns given status response 200
     """
