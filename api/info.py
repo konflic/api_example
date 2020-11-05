@@ -56,9 +56,11 @@ def response(status=200):
 
 @info_blueprint.route(routes.data, methods=HTTP_METHODS)
 def data():
-    return make_response(jsonify({
+    response = make_response(jsonify({
         "tag": "BUTTON",
         "classes": "btn btn-primary target",
         "text": "Loaded with Ajax",
         "display": "inline"
-    }), 403)
+    }), 200)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
