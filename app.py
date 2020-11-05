@@ -14,14 +14,17 @@ app.register_blueprint(api.delete.delete_blueprint)
 
 app.secret_key = "secret"
 
-
-@app.route('/api')
-@app.route('/api/docs')
-@app.route('/api/doc')
+@app.route("/")
 def index():
     return """
+    <p><b>Welcome to test API app!</b></p>
+    <a href="/api">Start here</a>
+    """
+
+@app.route('/api')
+def api():
+    return """
     <h1>API example</h1>
-    <a href="/api/doc">Documentation</a> Документация<br>
     <a href="/api/create">Create</a> Создаение данных<br>
     <a href="/api/read">Read</a> Чтение данных<br>
     <a href="/api/info">Info</a> Echo по запросу<br>

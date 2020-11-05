@@ -1,6 +1,8 @@
+import os
+
 HTTP_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH', 'BLABLA']
 DB_NAME = "database.db"
-ADMIN = {"login": "admin", "password": "admin"}
+ADMIN = {"login": os.getenv("LOGIN"), os.getenv("PASSWORD"): "admin"}
 
 style = """<head>
         <style>
