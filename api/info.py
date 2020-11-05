@@ -1,13 +1,16 @@
 from types import SimpleNamespace
 from src.settings import HTTP_METHODS, style
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify, Response, session, make_response
 
 info_blueprint = Blueprint('info', __name__)
 
 routes = SimpleNamespace(
     root="/api/info",
-    about="/api/info/about"
+    about="/api/info/about",
+    response="/api/info/response",
+    data="/api/info/data"
 )
+
 
 @info_blueprint.route(routes.root)
 def index():
@@ -15,12 +18,13 @@ def index():
     {style}
     <h2>Examples and info</h2>
     <a href="/api">< BACK</a><br><br>
-    <a href="{routes.about}">{routes.about}</a> Returns the request data as response<br>
-    <a href="/api/info/response/200">/api/info/response/200</a> - Returns given status response
+    <a href="{routes.data}">{routes.data}</a> - Returns simple JSON
+    <a href="{routes.about}">{routes.about}</a> - Returns the request data as response<br>
+    <a href="{routes.response}/200">{routes.response}/200</a> - Returns given status response 200
     """
 
 
-@info_blueprint.route('/api/info/about', methods=HTTP_METHODS)
+@info_blueprint.route(routes.about, methods=HTTP_METHODS)
 def about():
     return jsonify({
         "scheme": request.scheme,
@@ -38,8 +42,8 @@ def about():
     })
 
 
-@info_blueprint.route('/api/info/response', methods=HTTP_METHODS)
-@info_blueprint.route('/api/info/response/<status>', methods=HTTP_METHODS)
+@info_blueprint.route(routes.response, methods=HTTP_METHODS)
+@info_blueprint.route('{}/<status>'.format(routes.response), methods=HTTP_METHODS)
 def response(status=200):
     response = Response()
     try:
@@ -48,3 +52,13 @@ def response(status=200):
         response.status_code = 200
     response.set_data("<p>Response status is: {status}</p>".format(status=status))
     return response
+
+
+@info_blueprint.route(routes.data, methods=HTTP_METHODS)
+def data():
+    return make_response(jsonify({
+        "tag": "BUTTON",
+        "classes": "btn btn-primary target",
+        "text": "Loaded with Ajax",
+        "display": "inline"
+    }), 403)
