@@ -53,7 +53,9 @@ def login():
     data = request.get_json()
     time.sleep(2) # Imitating long response
 
-    if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
+    if request.method == "OPTIONS":
+        response = make_response({"status": "ok"}, 200)
+    elif data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
         session['authorized'] = True
         response = make_response({"status": "authorized"}, 200)
     else:
