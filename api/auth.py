@@ -1,3 +1,5 @@
+import time
+
 from types import SimpleNamespace
 from src.settings import ADMIN, style
 from flask import Blueprint, request, session, jsonify, make_response
@@ -49,7 +51,7 @@ def index():
 @auth_blueprint.route(routes.login, methods=["LOGIN"])
 def login():
     data = request.get_json()
-
+    time.sleep(2) # Imitating long response
     if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
         session['authorized'] = True
         response = make_response({"status": "authorized"}, 200)
