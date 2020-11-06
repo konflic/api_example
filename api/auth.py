@@ -48,10 +48,11 @@ def index():
     """
 
 
-@auth_blueprint.route(routes.login, methods=["LOGIN"])
+@auth_blueprint.route(routes.login, methods=["OPTIONS", "LOGIN"])
 def login():
     data = request.get_json()
     time.sleep(2) # Imitating long response
+
     if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
         session['authorized'] = True
         response = make_response({"status": "authorized"}, 200)
@@ -59,6 +60,7 @@ def login():
         # This is an example of wrong code given to auth error
         # 402 is a Payment required status
         response = make_response({"error": "wrong credentials"}, 402)
+
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Server"] = "WTF? 1.01 server"
     return response
