@@ -52,12 +52,13 @@ def login():
 
     if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
         session['authorized'] = True
-        response = make_response({"status": "authorized"}, 200, {"Server": "Super server 1.01"})
+        response = make_response({"status": "authorized"}, 200)
     else:
         # This is an example of wrong code given to auth error
         # 402 is a Payment required status
         response = make_response({"error": "wrong credentials"}, 402)
     response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Server"] = "WTF? 1.01 server"
     return response
 
 
