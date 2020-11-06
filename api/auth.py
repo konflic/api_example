@@ -1,4 +1,5 @@
 import time
+import json
 
 from types import SimpleNamespace
 from src.settings import ADMIN, style
@@ -51,8 +52,10 @@ def index():
 @auth_blueprint.route(routes.login, methods=["OPTIONS", "LOGIN"])
 def login():
     data = request.get_json()
+
     if data is None:
-        data = request.get_data()
+        data = json.loads(request.get_data())
+
     if request.method == "OPTIONS":
         response = make_response({"status": "ok"}, 200)
         response.headers["Access-Control-Allow-Methods"] = "LOGIN, OPTIONS"
