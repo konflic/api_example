@@ -1,30 +1,39 @@
-from types import SimpleNamespace
-from src.settings import HTTP_METHODS, style
-from flask import Blueprint, request, jsonify, Response, session, make_response
+from src.Route import Route
+from flask import Blueprint, request, jsonify, Response, make_response, render_template
 
 info_blueprint = Blueprint('info', __name__)
 
-routes = SimpleNamespace(
-    root="/api/info",
-    about="/api/info/about",
-    response="/api/info/response",
-    data="/api/info/data"
-)
+
+class Routes:
+    root = Route(
+        path="/api/info",
+        params="Any",
+        description="Info"
+    )
+    about = Route(
+        path="/api/info/about",
+        description="Returns echo of the given request"
+    )
+    response = Route(
+        path="/api/info/response",
+        params="/<status>",
+        description="Returns a given status code"
+    )
+    data = Route(
+        path="/api/info/data",
+        description="Returns json data"
+    )
+
+    def as_list(self):
+        return [self.about, self.response, self.data]
 
 
-@info_blueprint.route(routes.root)
+@info_blueprint.route(Routes.root.path)
 def index():
-    return f"""
-    {style}
-    <h2>Examples and info</h2>
-    <a href="/api">< BACK</a><br><br>
-    <a href="{routes.data}">{routes.data}</a> - Returns simple JSON<br>
-    <a href="{routes.about}">{routes.about}</a> - Returns the request data as response<br>
-    <a href="{routes.response}/200">{routes.response}/200</a> - Returns given status response 200
-    """
+    return render_template("describe.html", data=Routes().as_list(), title=Routes.root.description)
 
 
-@info_blueprint.route(routes.about, methods=HTTP_METHODS)
+@info_blueprint.route(Routes.about.path, methods=Routes.about.methods)
 def about():
     return jsonify({
         "scheme": request.scheme,
@@ -42,19 +51,20 @@ def about():
     })
 
 
-@info_blueprint.route(routes.response, methods=HTTP_METHODS)
-@info_blueprint.route('{}/<status>'.format(routes.response), methods=HTTP_METHODS)
+@info_blueprint.route(Routes.response.path, methods=Routes.response.methods)
+@info_blueprint.route(f'{Routes.response.path}/<status>', methods=Routes.response.methods)
 def response(status=200):
     response = Response()
     try:
         response.status_code = int(status)
     except:
+        # Default value
         response.status_code = 200
     response.set_data("<p>Response status is: {status}</p>".format(status=status))
     return response
 
 
-@info_blueprint.route(routes.data, methods=HTTP_METHODS)
+@info_blueprint.route(Routes.data.path, methods=Routes.data.methods)
 def data():
     response = make_response(jsonify({
         "tag": "BUTTON",
