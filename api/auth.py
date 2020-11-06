@@ -55,9 +55,9 @@ def login():
         response = make_response({"status": "authorized"}, 200, {"Server": "Super server 1.01"})
     else:
         # This is an example of wrong code given to auth error
-        # 402 is a Payment required
+        # 402 is a Payment required status
         response = make_response({"error": "wrong credentials"}, 402)
-        response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 
