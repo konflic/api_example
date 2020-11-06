@@ -61,8 +61,10 @@ def login():
     else:
         # This is an example of wrong code given to auth error
         # 402 is a Payment required status
-        response = make_response({"error": "wrong credentials",
-                                  "credentials": str(data.get("login")) + ":" + str(data.get("password"))}, 402)
+        response = make_response({
+            "error": "wrong credentials",
+            "credentials": str(data)
+        }, 402)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Server"] = "WTF? 1.01 server"
     return response
