@@ -57,6 +57,7 @@ def login():
         # This is an example of wrong code given to auth error
         # 402 is a Payment required
         response = make_response({"error": "wrong credentials"}, 402)
+        response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 
@@ -66,11 +67,14 @@ def logout():
         del session["authorized"]
         response = make_response({"status": "logout_ok"}, 201)
         response.delete_cookie("user")
-        return response
     else:
-        return make_response({"status": "not_authorized"})
+        response = make_response({"status": "not_authorized"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 @auth_blueprint.route(routes.status, methods=["HELLO", "GET"])
 def status():
-    return jsonify({"authorized": session.get("authorized")})
+    response = make_response({"authorized": session.get("authorized")})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
