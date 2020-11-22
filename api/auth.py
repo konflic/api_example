@@ -67,7 +67,7 @@ def login():
 
         if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
             session['authorized'] = True
-            response = make_response({"status": "authorized"}, 200)
+            response = make_response({"status": "authorized", "session": session}, 200)
             time.sleep(2)  # Imitating long response
         else:
             # This is an example of wrong code given to auth error
