@@ -47,6 +47,11 @@ def page_not_found(e):
     return make_response(
         jsonify({"status": "error", "description": "hello, i am here with wrong status!", "error": str(e)}), 502)
 
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return make_response(
+        jsonify({"status": "error", "description": "this method should not be here"}), 405)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=os.getenv("PORT", 5000), debug=True)

@@ -1,57 +1,46 @@
 import time
 import json
 
-from types import SimpleNamespace
-from src.settings import ADMIN, style
-from flask import Blueprint, request, session, jsonify, make_response
+from src.settings import ADMIN
+from src.Route import Route
+from flask import Blueprint, request, session, make_response, render_template
 
 auth_blueprint = Blueprint('auth', __name__)
 
-routes = SimpleNamespace(
-    root="/api/auth",
-    login="/api/auth/login",
-    status="/api/auth/status",
-    logout="/api/auth/logout"
-)
 
-@auth_blueprint.route(routes.root, methods=["GET"])
+class Routes:
+    root = Route(
+        path="/api/auth",
+        description="Authorization"
+    )
+    login = Route(
+        path="/api/auth/login",
+        methods=["OPTIONS", "LOGIN"],
+        params="{'login': 'login', 'password': 'password'}",
+        description="Authorization handler"
+    )
+    status = Route(
+        path="/api/auth/status",
+        methods=["HELLO", "GET"],
+        description="Check status of current authorization"
+    )
+    logout = Route(
+        path="/api/auth/logout",
+        methods=["DELETE"],
+        description="Finish session of currently authorized user"
+    )
+
+    def as_list(self):
+        return [self.login, self.status, self.logout]
+
+
+@auth_blueprint.route(Routes.root.path, methods=Routes.root.methods)
 def index():
-    return f"""
-    {style}
-    <h2>Authorization</h2>
-    <a href="/api">< BACK</a><br><br>
-    <table>
-        <tr>
-            <th>uri</th>
-            <th>method</th>
-            <th>params</th>
-            <th>description</th>
-        </tr>
-        <tr>
-            <td><a href="{routes.login}">{routes.login}</a> </td>
-            <td>LOGIN</td>
-            <td>[user:str, password:str] </td>
-            <td>Login with user and password</td>
-        </tr>
-        <tr>
-            <td><a href="{routes.logout}">{routes.logout}</a> </td>
-            <td>GET</td>
-            <td>None</td>
-            <td>Logout currently authorized user</td>
-        </tr>
-        <tr>
-            <td><a href="{routes.status}">{routes.status}</a></td>
-            <td>GET</td>
-            <td>None</td>
-            <td>Current login status</td>
-        </tr>
-    </table>
-    """
+    return render_template("describe.html", data=Routes().as_list(), title=Routes.root.description)
 
 
-@auth_blueprint.route(routes.login, methods=["OPTIONS", "LOGIN"])
+@auth_blueprint.route(Routes.login.path, methods=Routes.login.methods)
 def login():
-
     if request.method == "OPTIONS":
         response = make_response({"status": "ok"}, 200)
         response.headers["Access-Control-Allow-Methods"] = "LOGIN, OPTIONS"
@@ -65,9 +54,9 @@ def login():
             except json.decoder.JSONDecodeError:
                 data = {"login": "NONE", "password": "NONE"}
 
-        if data is not None and data.get("login") == ADMIN["login"] and data.get("password") == ADMIN["password"]:
+        if data is not None and data.get("login") == ADMIN.get("login") and data.get("password") == ADMIN.get("password"):
             session['authorized'] = True
-            response = make_response({"status": "authorized", "session": str(session)}, 200)
+            response = make_response({"status": f"authorized as {ADMIN.get('login')}", "session": str(session)}, 200)
             time.sleep(2)  # Imitating long response
         else:
             # This is an example of wrong code given to auth error
@@ -82,7 +71,7 @@ def login():
     return response
 
 
-@auth_blueprint.route(routes.logout, methods=["GET"])
+@auth_blueprint.route(Routes.logout.path, methods=Routes.logout.methods)
 def logout():
     if session.get("authorized"):
         del session["authorized"]
@@ -94,7 +83,7 @@ def logout():
     return response
 
 
-@auth_blueprint.route(routes.status, methods=["HELLO", "GET"])
+@auth_blueprint.route(Routes.status.path, methods=Routes.status.methods)
 def status():
     response = make_response({"authorized": session.get("authorized")})
     response.headers["Access-Control-Allow-Origin"] = "*"
