@@ -87,6 +87,8 @@ def logout():
 
 @auth_blueprint.route(Routes.status.path, methods=Routes.status.methods)
 def status():
-    response = make_response({"status": "ok", "description": f"authorized as {session.get('authorized')}"})
+    data = session.get('authorized')
+    description = f"authorized as {data}" if data is not None else "not_authorized"
+    response = make_response({"status": "ok", "description": description})
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
