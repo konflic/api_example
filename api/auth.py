@@ -42,7 +42,7 @@ def index():
 @auth_blueprint.route(Routes.login.path, methods=Routes.login.methods)
 def login():
     if request.method == "OPTIONS":
-        response = make_response({"status": "ok"}, 200)
+        response = make_response({"status": "ok", "description": ", ".join(Routes.login.methods)}, 200)
         response.headers["Access-Control-Allow-Methods"] = "LOGIN, OPTIONS"
     else:
 
@@ -54,7 +54,8 @@ def login():
             except json.decoder.JSONDecodeError:
                 data = {"login": "NONE", "password": "NONE"}
 
-        if data is not None and data.get("login") == ADMIN.get("login") and data.get("password") == ADMIN.get("password"):
+        if data is not None and data.get("login") == ADMIN.get("login") and data.get("password") == ADMIN.get(
+                "password"):
             session['authorized'] = True
             response = make_response({"status": f"authorized as {ADMIN.get('login')}", "session": str(session)}, 200)
             time.sleep(2)  # Imitating long response
@@ -62,7 +63,8 @@ def login():
             # This is an example of wrong code given to auth error
             # 402 is a Payment required status
             response = make_response({
-                "error": "wrong credentials",
+                "status": "error",
+                "description": "wrong credentials",
                 "credentials": str(data)
             }, 402)
 
@@ -78,13 +80,13 @@ def logout():
         response = make_response({"status": "logout_ok"}, 201)
         response.delete_cookie("user")
     else:
-        response = make_response({"status": "not_authorized"})
+        response = make_response({"status": "ok", "description": "not_authorized"})
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 
 @auth_blueprint.route(Routes.status.path, methods=Routes.status.methods)
 def status():
-    response = make_response({"authorized": session.get("authorized")})
+    response = make_response({"status": "ok", "description": f"authorized as {session.get('authorized')}"})
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
