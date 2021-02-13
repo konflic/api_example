@@ -2,6 +2,7 @@ import sqlite3
 from src.settings import DB_NAME
 from flask import make_response
 
+
 class DBConnector(object):
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -15,7 +16,7 @@ class DBConnector(object):
 def execute_sql(sql, values=None):
     connect = DBConnector().instance
     try:
-        if values:
+        if values is not None:
             connect.execute(sql, values)
         else:
             connect.execute(sql)
@@ -27,7 +28,7 @@ def execute_sql(sql, values=None):
 
 def get_sql_result(sql, values=None):
     connect = DBConnector().instance
-    if values:
+    if values is not None:
         result = connect.execute(sql, values)
     else:
         result = connect.execute(sql)

@@ -1,43 +1,39 @@
 import sqlite3
 
+from src.Route import Route
 from src.db import get_sql_result
-from src.settings import style
-from flask import Blueprint, jsonify, make_response
+from flask import Blueprint, jsonify, make_response, render_template
 
 read_blueprint = Blueprint('read', __name__)
 
-root = "/api/read"
 
-@read_blueprint.route(root)
+class Routes:
+    root = Route(
+        path="/api/read",
+        description="Read"
+    )
+    read_all = Route(
+        path="/api/read/all",
+        methods=["GET"],
+        description="Returns all user records in database"
+    )
+    read_name = Route(
+        path="/api/read/<name>",
+        methods=["GET"],
+        params="/<name>",
+        description="Returns record for a given name"
+    )
+
+    def as_list(self):
+        return [self.read_all, self.read_name]
+
+
+@read_blueprint.route(Routes.root.path)
 def index():
-    return f"""
-    {style}
-    <h2>Read</h2>
-    <a href="/api">< BACK</a><br><br>
-    <table>
-        <tr>
-            <th>uri</th>
-            <th>method</th>
-            <th>params</th>
-            <th>description</th>
-        </tr>
-        <tr>
-            <td><a href="/api/read/all">/api/read/all</a</td>
-            <td>GET</td>
-            <td>None</td>
-            <td>Show all users in database</td>
-        </tr>
-        <tr>
-            <td><a href="/api/read/name">/api/read/name</a></td>
-            <td>GET</td>
-            <td>None</td>
-            <td>Show data for given name</td>
-        </tr>
-    </table>
-    """
+    return render_template("describe.html", data=Routes().as_list(), title=Routes.root.description)
 
 
-@read_blueprint.route(f"{root}/all")
+@read_blueprint.route(Routes.read_all.path)
 def all():
     try:
         data = get_sql_result("SELECT * FROM users;")
@@ -46,7 +42,7 @@ def all():
         return make_response({"error": "database not created"})
 
 
-@read_blueprint.route(f'{root}/<name>')
+@read_blueprint.route(Routes.read_name.path)
 def user(name):
     try:
         data = get_sql_result("SELECT * FROM users WHERE name = ?;", (name,))

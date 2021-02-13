@@ -1,7 +1,7 @@
 import os
 import api
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 
 app = Flask(__name__)
 
@@ -14,12 +14,14 @@ app.register_blueprint(api.delete.delete_blueprint)
 
 app.secret_key = "secret"
 
+
 @app.route("/")
 def index():
     return """
     <p><b>Welcome to test API app!</b></p>
     <a href="/api">Start here</a>
     """
+
 
 @app.route('/api')
 def api():
@@ -34,9 +36,21 @@ def api():
     """
 
 
-@app.errorhandler(405)
+@app.route('/favicon.ico')
+def favicon():
+    return make_response(200)
+
+
+# Example of wrong status response
+@app.errorhandler(404)
 def page_not_found(e):
-    return jsonify({"status": "error", "description": "method_not_allowed"})
+    return make_response(
+        jsonify({"status": "error", "description": "hello, i am here with wrong status!", "error": str(e)}), 502)
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return make_response(
+        jsonify({"status": "error", "description": "this method should not be here"}), 405)
 
 
 if __name__ == "__main__":

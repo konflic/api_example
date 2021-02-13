@@ -1,14 +1,14 @@
-from src.settings import style
-from types import SimpleNamespace
-from flask import Blueprint, jsonify, session, make_response
+from flask import Blueprint, jsonify, session, make_response, render_template
 from src.db import execute_sql
+from src.Route import Route
 
 sql_create = """
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         surname TEXT NOT NULL,
-        grade INTEGER NOT NULL
+        grade INTEGER NOT NULL,
+        sex TEXT
     );
 """
 
@@ -16,43 +16,32 @@ sql_drop = "DROP TABLE IF EXISTS users;"
 
 create_blueprint = Blueprint('create', __name__)
 
-routes = SimpleNamespace(
-    root="/api/create",
-    init="/api/create/init",
-    reinit="/api/create/reinit"
-)
+
+class Routes:
+    root = Route(
+        path="/api/create"
+    )
+    init = Route(
+        path="/api/create/init",
+        methods=["CREATE"],
+        description="Creating new database"
+    )
+    reinit = Route(
+        path="/api/create/reinit",
+        methods=["RECREATE"],
+        description="Recreating existing database"
+    )
+
+    def as_list(self):
+        return [self.init, self.reinit]
 
 
-@create_blueprint.route(routes.root)
+@create_blueprint.route(Routes.root.path)
 def create():
-    return f"""
-    {style}
-    <h2>Create endpoint</h2>
-    <a href="/api">< BACK</a><br><br>
-    <table>
-        <tr>
-            <th>uri</th>
-            <th>method</th>
-            <th>params</th>
-            <th>description</th>
-        </tr>
-        <tr>
-            <td><a href="{routes.init}">{routes.init}</a></td>
-            <td>CREATE</td>
-            <td>None</td>
-            <td>Creating database if exists</td>
-        </tr>
-        <tr>
-            <td><a href="{routes.reinit}">{routes.reinit}</a></td>
-            <td>CREATE</td>
-            <td>None</td>
-            <td>Remove and create new database</td>
-        </tr>
-    </table>
-    """
+    return render_template("describe.html", data=Routes().as_list(), title=Routes.root.description)
 
 
-@create_blueprint.route('/api/create/init', methods=["CREATE"])
+@create_blueprint.route(Routes.init.path, methods=Routes.init.methods)
 def init():
     if session.get("authorized"):
         try:
@@ -65,7 +54,7 @@ def init():
         return make_response(jsonify({"status": "error", "description": "authorization_required"}), 403)
 
 
-@create_blueprint.route('/api/create/reinit', methods=["CREATE"])
+@create_blueprint.route(Routes.reinit.path, methods=Routes.reinit.methods)
 def reinit():
     if session.get("authorized"):
         try:
