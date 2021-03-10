@@ -1,12 +1,13 @@
 import time
 import json
+import random
 
 from src.settings import ADMIN
 from src.Route import Route
 from flask import Blueprint, request, session, make_response, render_template
 
 auth_blueprint = Blueprint('auth', __name__)
-
+SERVER = "WTF? 1.01 server"
 
 class Routes:
     root = Route(
@@ -57,8 +58,12 @@ def login():
         if data is not None and data.get("login") == ADMIN.get("login") and data.get("password") == ADMIN.get(
                 "password"):
             session['authorized'] = True
-            response = make_response({"status": f"authorized as {ADMIN.get('login')}", "session": str(session)}, 200)
-            time.sleep(2)  # Imitating long response
+            response = make_response({
+                "status": "authorized",
+                "user": f"{ADMIN.get('login')}",
+                "session": str(session)},
+                200)
+            time.sleep(random.randint(2, 5))  # Imitating long response
         else:
             # This is an example of wrong code given to auth error
             # 402 is a Payment required status
@@ -69,7 +74,7 @@ def login():
             }, 402)
 
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Server"] = "WTF? 1.01 server"
+    response.headers["Server"] = SERVER
     return response
 
 
@@ -82,6 +87,7 @@ def logout():
     else:
         response = make_response({"status": "ok", "description": "not_authorized"})
     response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Server"] = SERVER
     return response
 
 
@@ -93,4 +99,5 @@ def status():
         description = "hello, you are not authorized"
     response = make_response({"status": "ok", "description": description})
     response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Server"] = SERVER
     return response
