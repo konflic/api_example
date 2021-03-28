@@ -24,6 +24,11 @@ pip install -U pip
 pip install -Ur requirements.txt
 ```
 
+Run service
+```
+python app.py
+```
+
 Or use docker instead
 
 ```bash
