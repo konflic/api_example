@@ -2,13 +2,17 @@
 
 This is an API example for testing and demo purposes.
 
+## Description
+
+App allows to store data for users and assign them with grades.
+
 ## Setup
 
-Before starting the application environment variables should be set to define admin user
+Prior to starting the application environment variables should be set to define admin user of the application.
 
 ```
-export LOGIN=admin
-export PASSWORD=admin
+export LOGIN={admin password}
+export PASSWORD={admin password}
 ```
 You can setup with venv
 
@@ -23,5 +27,5 @@ Or use docker instead
 
 ```bash
 docker build -t api_example .
-ADMIN=admin PASSWORD=admin docker run -p 5000:5000 api_example -d
+docker run -p 8888:8888 -e PORT=8888 -e LOGIN={admin login} -e PASSWORD={admin password} test_app
 ```

@@ -54,4 +54,11 @@ def method_not_allowed(e):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=os.getenv("PORT", 5000), debug=True)
+    print("==> ADMIN: ", os.getenv("ADMIN"))
+    print("==> PASSWORD: ", os.getenv("PASSWORD"))
+
+    app.run(
+        host="0.0.0.0",
+        port=os.getenv("PORT", 5000),
+        debug=True
+    )

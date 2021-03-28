@@ -28,8 +28,8 @@ def index():
         <tr>
             <td><a href="{routes.add}">{routes.add}</a</td>
             <td>POST</td>
-            <td>name:str surname:str grade:int</td>
-            <td>Add user with given credentials to database</td>
+            <td>name:str surname:str sex:str grade:int</td>
+            <td>Add user with given data to database</td>
         </tr>
         <tr>
             <td><a href="{routes.change_grade}">{routes.change_grade}</a</td>
@@ -46,8 +46,8 @@ def add():
     if session.get("authorized"):
         data = request.json
         try:
-            execute_sql("INSERT INTO users (name, surname, grade) VALUES (?, ? ,?)",
-                        (data['name'], data['surname'], data['grade']))
+            execute_sql("INSERT INTO users (name, surname, grade, sex) VALUES (?, ? ,?, ?)",
+                        (data['name'], data['surname'], data['grade'], data['sex']))
         except Exception as e:
             return make_response({"status": "error", "description": str(e)}, 400)
         return make_response({"status": "ok", "data": data}, 201)
