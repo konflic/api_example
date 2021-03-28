@@ -14,7 +14,8 @@ Prior to starting the application environment variables should be set to define 
 export LOGIN={admin password}
 export PASSWORD={admin password}
 ```
-You can setup with venv
+
+You can setup project with venv
 
 ```bash
 python3 -m venv venv
@@ -27,5 +28,5 @@ Or use docker instead
 
 ```bash
 docker build -t api_example .
-docker run -p 8888:8888 -e PORT=8888 -e LOGIN={admin login} -e PASSWORD={admin password} test_app
+docker run -p 8888:8888 -e PORT=8888 -e LOGIN={admin login} -e PASSWORD={admin password} api_example
 ```
