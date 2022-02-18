@@ -28,7 +28,8 @@ def create():
     with open("example.json", "r") as f:
         data = json.load(f)
         for k, v in data.items():
-            response += k.upper() + "=" + str(v) + "\n"
+            value = f"'{str(v)}'" if " " in str(v) else str(v)
+            response += k.upper() + "=" + value + "\n"
     return make_response(response, 200)
 
 
