@@ -23,6 +23,11 @@ def index():
     """
 
 
+@app.route("/config")
+def index():
+    return "MAX_PROCESSES=6\nRERUNS=4\nMARKS=''\nRERUN_DELAY=1"
+
+
 @app.route('/api')
 def api():
     return """
@@ -46,6 +51,7 @@ def favicon():
 def page_not_found(e):
     return make_response(
         jsonify({"status": "error", "description": "hello, i am here with wrong status!", "error": str(e)}), 502)
+
 
 @app.errorhandler(405)
 def method_not_allowed(e):
