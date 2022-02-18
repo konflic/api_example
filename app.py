@@ -25,7 +25,7 @@ def index():
 
 @app.route("/config")
 def config():
-    return "MAX_PROCESSES=6\nRERUNS=4\nMARKS=''\nRERUN_DELAY=1"
+    return "MAX_PROCESSES=3\nRERUNS=3\nMARKS=''\nRERUN_DELAYS=3"
 
 
 @app.route('/api')
