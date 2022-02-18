@@ -19,7 +19,8 @@ create_blueprint = Blueprint('create', __name__)
 
 class Routes:
     root = Route(
-        path="/api/create"
+        path="/api/create",
+        description="Create routes"
     )
     init = Route(
         path="/api/create/init",

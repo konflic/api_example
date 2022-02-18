@@ -4,6 +4,7 @@ from flask import make_response
 
 
 class DBConnector(object):
+
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(DBConnector, cls).__new__(cls)

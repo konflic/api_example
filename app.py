@@ -11,6 +11,7 @@ app.register_blueprint(api.create.create_blueprint)
 app.register_blueprint(api.update.update_blueprint)
 app.register_blueprint(api.auth.auth_blueprint)
 app.register_blueprint(api.delete.delete_blueprint)
+app.register_blueprint(api.config.config_blueprint)
 
 app.secret_key = "secret"
 
